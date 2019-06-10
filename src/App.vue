@@ -1,5 +1,35 @@
 <template>
-  <v-app>
+  <v-app dark>
+    <v-navigation-drawer
+      fixed
+      temporary
+      app
+      v-model="navBar"
+    >
+      <v-list dense class="pt-0">
+        <router-link to="/">
+          <v-list-tile>
+            <v-list-tile-action>
+              <v-icon>dashboard</v-icon>
+            </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>DASHBOARD</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </router-link>
+          <router-link to="/setting">
+            <v-list-tile>
+              <v-list-tile-action>
+                <v-icon>settings</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>SETTING</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </router-link>
+        </v-list>
+    </v-navigation-drawer>
+
     <v-toolbar app>
       <v-toolbar-title class="headline text-uppercase">
         <span>Vuetify</span>
@@ -16,18 +46,34 @@
     </v-toolbar>
 
     <v-content>
-      <HelloWorld/>
+      <MainComponent/>
     </v-content>
+
+    <v-footer
+      dark
+      height="auto"
+    >
+      <v-card
+        class="flex"
+        flat
+        tile
+      >
+        <v-card-actions class="grey darken-3 justify-center">
+          &copy;2019 — <strong>Vuetify</strong>
+        </v-card-actions>
+      </v-card>
+    </v-footer>
+
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
+import MainComponent from './components/MainComponent.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    MainComponent
   },
   data () {
     return {
@@ -36,3 +82,9 @@ export default {
   }
 }
 </script>
+
+<style>
+  a {
+    text-decoration: none;
+  }
+</style>
