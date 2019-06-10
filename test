@@ -9,4 +9,11 @@ vue create [***proj]
 cd [***proj]
 vue add vuetify
 
-＊
+＊vue.config.jsを追加（Invalid Host header, git pod でのみ）
+module.exports = {
+    // options...
+    devServer: {
+        disableHostCheck: true
+    }
+}
+
