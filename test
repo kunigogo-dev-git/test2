@@ -3,8 +3,10 @@
 npm install -g @vue/cli
 npm install -g @vue/cli-init
 ＊プロジェクト作成[***proj]
-cd .. 
+cd ..
 vue create [***proj]
 ＊vuetify追加
-cd [***proj] 
+cd [***proj]
 vue add vuetify
+
+＊
