@@ -43,7 +43,17 @@
           <v-system-bar lighter>
             <span>Import and Information Area</span>
           </v-system-bar>
-          <v-card-title>Drop to import area</v-card-title>
+          <v-card-title>
+            <label for="corporation_file" class="btn btn-success">
+              Drop to import or select file(click here)
+              <input type="file" class="drop__input"
+                style="display:none;"
+                id="corporation_file"
+                webkitdirectory directory
+                @change="onChangeAtFolderSelect"
+                >
+            </label>
+          </v-card-title>
           <v-divider></v-divider>
         <v-card-text width="100%" height="100%"></v-card-text>
         </v-card>
@@ -53,6 +63,9 @@
 </template>
 
 <script>
+  import {getFiles,getFilesFromDragEvent} from "html-dir-content"
+  import {default as ImageDataManager} from 'imageDataManager.js'
+
   export default {
     data: () => ({
       headers: [
@@ -68,8 +81,24 @@
       ],
     }),
     methods: {
+      onChangeAtFolderSelect(event) {
+        let fileList = event.target.files ? event.target.files : event.dataTransfer.files;
+        if(fileList.length == 0){
+          return false;
+        }
+        let files = [];
+        for(let i = 0; i < fileList.length; i++){
+          files.push(fileList[i]);
+        }
+        let file = files.length > 0 ? files[0] : [];
+
+        console.log("we have the files: ", files);
+      },
       onDropAtDataImport(event, key = '', image = {}) {
-        alert('test')
+        getFilesFromDragEvent(event, true) //will perform recusrive traversal
+            .then((files) => {
+                console.log("we have the files: ", files);
+            });
 
         let fileList = event.target.files ? event.target.files : event.dataTransfer.files;
         // ファイルが無い時は処理を中止

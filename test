@@ -17,3 +17,7 @@ module.exports = {
     }
 }
 
+＊ライブラリを追加
+npm install html-dir-content
+npm install cornerstone-core
+npm install dicom-parser
