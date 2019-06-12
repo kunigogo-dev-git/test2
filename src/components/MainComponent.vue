@@ -64,7 +64,9 @@
 
 <script>
   import {getFiles,getFilesFromDragEvent} from "html-dir-content"
-  import {default as ImageDataManager} from 'imageDataManager.js'
+  import {default as ImageDataManager} from '../components/imageDataManager.js'
+
+  var dataManager = new ImageDataManager()
 
   export default {
     data: () => ({
@@ -92,7 +94,9 @@
         }
         let file = files.length > 0 ? files[0] : [];
 
-        console.log("we have the files: ", files);
+        let parsedList = dataManager.validateFSAPIEntry(files)
+
+        console.log("parsed results: ", parsedList);
       },
       onDropAtDataImport(event, key = '', image = {}) {
         getFilesFromDragEvent(event, true) //will perform recusrive traversal
