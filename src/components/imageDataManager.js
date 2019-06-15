@@ -9,15 +9,24 @@ export default class {
 
   }
 
-  async validateFSAPIEntry(fileList) {
-    let parsedList = []
-    for(let [k, v] of fileList.entries()) {
-      console.log(v)
+  async validateFileSystemAPIEntry(fileList) {
+    return await validateFSAPIEntry(fileList)
+  }
+}
+
+export async function validateFSAPIEntry(fileList) {
+  let parsedList = []
+  for(let [k, v] of fileList.entries()) {
+    try {
       let parsed = await parseDICOMFile(v)
       parsedList.push(parsed)
+      console.log(v.name + ' parsed')
     }
-    return parsedList
+    catch(err){
+      console.log(v.name + ' is not valid DICOM file')
+    }
   }
+  return parsedList
 }
 
 export async function parseDICOMFile(file) {

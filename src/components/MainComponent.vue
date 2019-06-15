@@ -5,58 +5,69 @@
       wrap
     >
       <v-flex xs8>
-        <v-card width="100%" height="100%" min-height="300px">
-        <v-system-bar lighter>
-          <span>Data List</span>
-        </v-system-bar>
-        <v-data-table
-          :headers="headers"
-          :items="dataList"
-          class="elevation-1"
-        >
-          <template v-slot:items="props">
-            <td class="text-xs-left">{{ props.item.id }}</td>
-            <td class="text-xs-left">{{ props.item.name }}</td>
-            <td class="text-xs-center">{{ props.item.age }}</td>
-            <td class="text-xs-left">{{ props.item.studyDate }}</td>
-            <td class="justify-center layout px-0">
-              <v-icon
-                class="mr-2"
-                @click="editItem(props.item)"
+        <v-expansion-panel id>
+          <v-expansion-panel-content
+          >
+            <template v-slot:header>
+              <div>Data list</div>
+            </template>
+
+            <v-card width="100%" height="100%" min-height="300px">
+              <v-data-table
+                :headers="headers"
+                :items="dataList"
+                class="elevation-1"
               >
-                visibility
-              </v-icon>
-              <v-icon
-                @click="deleteItem(props.item)"
-              >
-                history
-              </v-icon>
-            </td>
-          </template>
-        </v-data-table>
-        </v-card>
+              <template v-slot:items="props">
+                <td class="text-xs-left">{{ props.item.id }}</td>
+                <td class="text-xs-left">{{ props.item.name }}</td>
+                <td class="text-xs-center">{{ props.item.age }}</td>
+                <td class="text-xs-left">{{ props.item.studyDate }}</td>
+                <td class="justify-center layout px-0">
+                  <v-icon
+                    class="mr-2"
+                    @click="editItem(props.item)"
+                  >
+                    visibility
+                  </v-icon>
+                  <v-icon
+                    @click="deleteItem(props.item)"
+                  >
+                    history
+                  </v-icon>
+                </td>
+              </template>
+              </v-data-table>
+            </v-card>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
       </v-flex>
 
       <v-flex xs4>
-        <v-card width="100%" height="100%" min-height="300px"
-          @drop.prevent="onDropAtDataImport">
-          <v-system-bar lighter>
-            <span>Import and Information Area</span>
-          </v-system-bar>
-          <v-card-title>
-            <label for="corporation_file" class="btn btn-success">
-              Drop to import or select file(click here)
-              <input type="file" class="drop__input"
-                style="display:none;"
-                id="corporation_file"
-                webkitdirectory directory
-                @change="onChangeAtFolderSelect"
-                >
-            </label>
-          </v-card-title>
-          <v-divider></v-divider>
-        <v-card-text width="100%" height="100%"></v-card-text>
-        </v-card>
+        <v-expansion-panel import>
+          <v-expansion-panel-content
+          >
+            <template v-slot:header>
+              <div>Import and Information Area</div>
+            </template>
+            <v-card width="100%" height="100%" min-height="300px"
+              @drop.prevent="onDropAtDataImport">
+              <v-card-title>
+                <label for="corporation_file" class="btn btn-success">
+                  Drop to import or select file(click here)
+                  <input type="file" class="drop__input"
+                    style="display:none;"
+                    id="corporation_file"
+                    webkitdirectory directory
+                    @change="onChangeAtFolderSelect"
+                    >
+                </label>
+              </v-card-title>
+              <v-divider></v-divider>
+            <v-card-text width="100%" height="100%"></v-card-text>
+            </v-card>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
       </v-flex>
     </v-layout>
   </v-container>
@@ -83,7 +94,7 @@
       ],
     }),
     methods: {
-      onChangeAtFolderSelect(event) {
+      async onChangeAtFolderSelect(event) {
         let fileList = event.target.files ? event.target.files : event.dataTransfer.files;
         if(fileList.length == 0){
           return false;
@@ -92,10 +103,16 @@
         for(let i = 0; i < fileList.length; i++){
           files.push(fileList[i]);
         }
-        let file = files.length > 0 ? files[0] : [];
 
-        let parsedList = dataManager.validateFSAPIEntry(files)
+        var parsedList = null;
+        async function parsePart(toParseList) {
+          return new Promise((resolve, reject) => {
+            let parsedList = dataManager.validateFileSystemAPIEntry(toParseList)
+            resolve(parsedList)
+          })
+        }
 
+        parsedList = await parsePart(files)
         console.log("parsed results: ", parsedList);
       },
       onDropAtDataImport(event, key = '', image = {}) {
@@ -105,7 +122,7 @@
             });
 
         let fileList = event.target.files ? event.target.files : event.dataTransfer.files;
-        // ファイルが無い時は処理を中止
+        // check file counts
         if(fileList.length == 0){
           return false;
         }
@@ -113,8 +130,6 @@
         for(let i = 0; i < fileList.length; i++){
           files.push(fileList[i]);
         }
-        // 今回は1ファイルのみ送ることにする。
-        let file = files.length > 0 ? files[0] : [];
       },
     }
   }
