@@ -3,6 +3,7 @@ import * as dicomParser from "dicom-parser"
 
 export default class {
   constructor() {
+    this.LocalStoreID = 'local'
   }
 
   setLocalDataStoreID(storeID) {
@@ -11,6 +12,18 @@ export default class {
 
   async validateFileSystemAPIEntry(fileList) {
     return await validateFSAPIEntry(fileList)
+  }
+
+  getBasicDICOMInfo(dataSet) {
+    return getBasicDCMInfo(dataSet)
+  }
+
+  divideToPatientStudySeries(dataList) {
+
+  }
+
+  registerDataset(info, dataList) {
+
   }
 }
 
@@ -49,10 +62,10 @@ export async function parseDICOMFile(file) {
         var time = end - start
         if(dataSet.warnings.length > 0)
         {
-
+          console.log('parse process with warnings : ' + file)
         }
 
-        resolve({"taglist" : taglist,"dataset": dataSet})
+        resolve({'taglist' : taglist, 'dataset': dataSet, 'file':file})
       }
       catch(err)
       {
@@ -65,4 +78,28 @@ export async function parseDICOMFile(file) {
     }
     reader.readAsArrayBuffer(file)
   });
+}
+
+export function getBasicDCMInfo(dataset) {
+  let studyInstanceUid = dataSet.string('x0020000d')
+  let seriesInstanceUid = dataSet.string('x0020000e')
+  let sopInstanceUid = dataSet.string('x0008018d')
+  let patientsName = dataSet.string('x00100010') === undefined ?
+    '' : dataSet.string('x00100010')
+  let patientId = dataSet.string('x00100020') === undefined ?
+    '' : dataSet.string('x00100020')
+  let otherPatientIds = dataSet.string('x00101002') === undefined ?
+    '' : dataSet.string('x00101002')
+  return {
+      'studyInstanceUid': studyInstanceUid, 'seriesInstanceUid': seriesInstanceUid,
+      'sopInstanceUid': sopInstanceUid, 'patientsName': patientsName,
+      'patientId': patientId, 'otherPatientIds': otherPatientIds,
+  }
+}
+
+export function divideToPatStdSer(dataList) {
+  let patients = {}
+  for( item in dataList ) {
+    let info = getBasicDCMInfo(item)
+  }
 }

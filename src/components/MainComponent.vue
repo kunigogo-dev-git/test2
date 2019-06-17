@@ -69,7 +69,33 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-flex>
+
+      <v-flex xs8>
+        <v-expansion-panel id>
+          <v-expansion-panel-content
+          >
+            <template v-slot:header>
+              <div>Viewer</div>
+            </template>
+
+            <v-card width="100%" height="100%" min-height="300px">
+            </v-card>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-flex>
+
     </v-layout>
+
+
+    <v-dialog v-model="progressDialog" max-width="80%">
+      <v-card>
+        <v-card-title>Import Progress</v-card-title>
+        <v-divider></v-divider>
+        <v-progress-linear v-model="progressValue"></v-progress-linear>
+        <v-card-text height="150px">{{ progressMessage }}</v-card-text>
+      </v-card>
+    </v-dialog>
+
   </v-container>
 </template>
 
@@ -92,6 +118,9 @@
         { id: 'P00001', name: 'Pat 1', age: 10, studyDate: '2019/04/02' },
         { id: 'P03043', name: 'Pat 2', age: 10, studyDate: '2004/08/02' },
       ],
+      progressDialog: false,
+      progressValue: 10,
+      progressMessage: 'Importing....',
     }),
     methods: {
       async onChangeAtFolderSelect(event) {
@@ -104,6 +133,7 @@
           files.push(fileList[i]);
         }
 
+        this.progressDialog = true
         var parsedList = null;
         async function parsePart(toParseList) {
           return new Promise((resolve, reject) => {
@@ -113,6 +143,12 @@
         }
 
         parsedList = await parsePart(files)
+
+
+
+        setTimeout(() => {this.progressDialog = false}, 1000)
+        //this.progressDialog = false
+
         console.log("parsed results: ", parsedList);
       },
       onDropAtDataImport(event, key = '', image = {}) {
