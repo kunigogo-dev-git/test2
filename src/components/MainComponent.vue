@@ -79,13 +79,27 @@
             </template>
 
             <v-card width="100%" height="100%" min-height="300px">
+              <ImageView/>
+            </v-card>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-flex>
+
+      <v-flex xs4>
+        <v-expansion-panel id>
+          <v-expansion-panel-content
+          >
+            <template v-slot:header>
+              <div>Control Panel</div>
+            </template>
+
+            <v-card width="100%" height="100%" min-height="300px">
             </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-flex>
 
     </v-layout>
-
 
     <v-dialog v-model="progressDialog" max-width="80%">
       <v-card>
@@ -103,9 +117,12 @@
   import {getFiles,getFilesFromDragEvent} from "html-dir-content"
   import {default as ImageDataManager} from '../components/imageDataManager.js'
 
+  import ImageView from "../components/ImageView"
+
   var dataManager = new ImageDataManager()
 
   export default {
+    components: {ImageView} ,
     data: () => ({
       headers: [
         { text: 'ID', align: 'center', value: 'id' },
